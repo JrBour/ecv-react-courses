@@ -1,0 +1,348 @@
+import { DarkSlide, CodeSlide, ImageLayout } from '../../slides';
+
+# Redux
+## ECV Digital
+###### Jérémy Bourel - 2020
+
+---
+
+### Sommaire
+- Qu'est-ce que Redux ?
+- Store
+- Actions
+- Reducer
+- Dispatch
+- Selector
+- Architecture
+- Lier redux et react
+- Lier un composant à redux
+- Hooks
+- Redux Toolkit
+
+---
+
+## Qu'est-ce que Redux ?
+
+Redux est une bibliothèque JavaScript qui permet de gérer l'état (state) de son application.
+Comme pour le state React, il est immutable, il ne peut être modifié que par des méthodes spécifiques.
+
+<ImageLayout image={"flux"} />
+
+[Redux](https://redux.js.org)
+
+---
+
+## Store
+
+Le store est l'état global de l'application. Il va comprendre les informations liées à l'utilisateur ou bien encore les informations métiers de l'application.
+
+<ImageLayout image={"store"} />
+
+[Store](https://redux.js.org/api/store)
+
+---
+
+## Actions
+
+Une action est un objet qui contient une propriété `type` et peut aussi contenir un payload qui sera envoyé au reducer.
+
+```js
+export const AddItemAction = payload => ({
+    type: 'todo/addItem',
+    payload
+})
+```
+
+[Actions](https://redux.js.org/tutorials/fundamentals/part-2-concepts-data-flow#actions)
+
+---
+
+## Reducers
+
+Un reducer est une méthode qui reçoit comme paramètre le state (store) ainsi qu'une action. Dans cette méthode, une ou plusieurs conditions comprises dans un switch/case seront présentes, afin de savoir qu'elle type d'action a été appelé, et quelle opération doit être effectuée pour mettre à jour le store.
+
+```js
+const initialState = {
+  todos: []
+}
+ 
+const todos = (state = initialState, action) => {
+  switch(action.type){
+    case 'todo/addItem': 
+      return {
+        ...state,
+        todos: [...state.todos, {...action.payload}]
+      }
+    case 'todo/removeItem': 
+      return {
+        ...state,
+        todos: state.todos.filter(item => item.name !== action.payload.name)
+      }
+    default:
+      return state;
+  }
+}
+```
+
+[Reducers](https://redux.js.org/tutorials/fundamentals/part-2-concepts-data-flow#reducers)
+
+---
+
+## Dispatch
+
+Dispatch est une méthode de redux qui prend comme paramètre une action. 
+C'est la seule manière de pouvoir appeller une action, et ainsi, la seule manière de pouvoir mettre à jour le store. 
+Lorsque l'action est "dispatch", le store appelle le reducer correspondant.
+
+```js
+const newItem = {
+    name : 'Buy milk',
+    id: 4
+};
+    
+store.dispatch(addItemAction(newItem))
+```
+
+[Dispatch](https://redux.js.org/tutorials/fundamentals/part-2-concepts-data-flow#dispatch)
+
+---
+
+## Selector
+Le selector est une méthode qui prend en paramètre le state. Elle va nous permettre de récupérer certains éléments du store et de les afficher depuis nos composants.
+
+```js
+    export const getTodoList = state => state.todos;
+    export const todoList = getTodoList(store.getState());
+```
+
+[Selectors](https://redux.js.org/tutorials/fundamentals/part-2-concepts-data-flow#selectors)
+
+---
+
+## Architecture
+
+Il existe de nombreuses manières d'architecturer ses dossiers/fichiers liés à redux. La plus simple et la plus organisée d'entre elles, est la suivante.
+
+```
+    .  
+    ├── index.js                # Fichier de configuration  
+    ├── module                  # Ex: users, todos...  
+    │   ├── actions.js
+    |   ├── selectors.js
+    |   ├── reducer.js  
+    └── ...  
+```
+
+
+**todos/action.js**
+```js
+  export const addItemAction = payload => ({
+    type: 'todos/addItem',
+    payload
+  });
+ 
+  export const removeItemAction = payload => ({
+    type: 'todos/removeItem',
+    payload
+  });
+ 
+  export const editItemAction = payload => ({
+    type: 'todos/editItem',
+    payload
+  })
+```
+
+---
+
+**todos/reducer.js**
+```js
+  import { combineReducers, createStore } from 'redux'
+  import todos from '@/store/todo/reducer';
+  import users from '@/store/user/reducer';
+
+  const reducers = combineReducers({
+    todos,
+    users
+  })
+ 
+  const store = createStore(reducers)
+ 
+  export defaut store;
+```
+
+**todos/selector.js**
+```js
+   export const getTodoList = state => state.todo;
+```
+
+---
+
+## Lier redux et react
+
+Pour commencer il faut initialiser le store dans le fichier `index.js`.
+
+```js
+  import { Provider } from 'react-redux';
+  import store from './store';
+  
+  ReactDOM.render(
+    <Provider store={store}>
+      <App />
+    </Provider>,
+    document.getElementById('root')
+  );
+```
+
+---
+
+Dans le fichier `store/index.js` doit être appelé les méthodes permettant de créer le store et de combiner/fusionner plusieurs reducers entre eux.
+
+```js
+	import { combineReducers, createStore } from 'redux'
+	import todos from '@/store/todo/reducer';
+	import users from '@/store/user/reducer';
+ 
+	const reducers = combineReducers({
+		todos,
+		users
+	})
+ 
+	const store = createStore(reducers);
+ 
+	export defaut store;
+
+```
+
+---
+
+## Lier un composant à redux
+
+**List/connector.js**
+```js
+  import { connect } from 'redux';
+  import { addItem } from '@/store/todos/actions';
+  import { getTodos } from '@/store/todos/selectors';
+  
+  const mapDispatchToProps = dispatch => ({
+    addItem: item => dispatch(addItem(item))
+  })
+  
+  const mapStateToProps = state => ({
+    items: item => getTodos(state)
+  })
+  
+  export defaut Component => connect(mapStateToProps, mapDispatchToProps)(Component);
+```
+
+---
+
+**List/index.jsx**
+```js
+  import { useState } from 'react';
+  import connect from './connector.js';
+  
+  const List = ({ items, addItem }) => {
+    const [newItem, setNewItem] = useState('');
+    const handleChange = ({ target: { value } }) => setNewItem(value);
+  
+    const addTask = () => {
+      addItem(newItem)
+      setNewItem('')
+    }
+  
+    return (
+      <>
+        <ul>
+          {items.map(item => <li key={item.name}>{item.name}</li>)}
+        </ul>
+        <input onChange={handleChange} value={newItem} />
+        <button onClick={addTask}>Add item</button>
+      </>
+    )
+  }
+ 
+  export defaut connect(List);
+```
+
+---
+
+## Hooks
+Comme en react, redux comprend des hooks. Cela nous évite l'utilisation des méthodes `connect`, `mapDispatchToProps` et `mapStateToProps`.
+
+```js
+  import { useState } from 'react';
+  import { useDispatch, useSelector } from 'react-redux';
+  import { addItem } from '@/store/todos/actions'
+  import { getTodos } from '@/store/todos/selectors'
+  
+  const List = () => {
+    const dispatch = useDispatch();
+    const items = useSelector(getTodos) 
+    const [newItem, setNewItem] = useState('');
+    
+    const handleChange = ({ target: { value } }) => setNewItem(value);
+    const addTask = () => {
+      dispatch(addItem(newItem))
+    }
+  
+    return (
+      <>
+        <ul>
+          {items.map(item => <li key={item.name}>{item.name}</li>)}
+        </ul>
+        <input onChange={handleChange} value={newItem} />
+        <button onClick={addTask}>Add item</button>
+      </>
+    )
+  }
+  
+  export defaut List;
+```
+
+[Hooks](https://react-redux.js.org/api/hooks)
+
+---
+
+## Redux Toolkit
+Redux Toolkit est une bibliothèque qui permet d'écrire les actions/reducers de manière beaucoup plus simple.
+L'architecture recommandée pour utiliser Redux Toolkit avec les slices est Duck.
+
+```bash
+ yarn add @reduxjs/toolkit 
+ # OR
+ npm install @reduxjs/toolkit
+```
+
+---
+
+```js
+  import { createSlice } from '@reduxjs/toolkit';
+  
+  const initialState = {
+      todos: []
+  };
+  
+  const todos = createSlice({
+    name: 'todos',
+    initialState,
+    reducers: {
+      addItem(state, { payload }){
+        state.todos = [...state.todos, payload]
+      },
+      editItem(state, { payload }){
+        state.todos = [...state.todos.map(item => item.id === action.payload.id ? action.payload : item)]    
+      },
+      removeItem(state, { payload }){
+        state.todos = [...state.items.filter(item => item.id !== action.payload.id)]    
+      },
+    }
+  });
+  
+  export const {
+      populateSurveys,
+      addSurveyToEdit,
+  } = surveys.actions;
+```
+
+[Redux-toolkit](https://redux-toolkit.js.org/)
+[Duck](https://github.com/erikras/ducks-modular-redux)

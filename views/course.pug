@@ -1,0 +1,9 @@
+html
+    head
+        title ECV - API - #{course.title}
+        link(href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet")
+        link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prism-themes@1.0.1/themes/prism-atom-dark.css")
+    body
+        #root
+        script(src=`/dist/${course.code}.js` type="application/javascript")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-jsx.min.js")

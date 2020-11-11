@@ -1,0 +1,706 @@
+import {DarkSlide, CodeSlide, ImageLayout} from '../../slides';
+
+# React
+## ECV Digital
+### Jérémy Bourel - 2020
+
+---
+
+### Sommaire
+- Qu'est-ce que React ?
+- Virtual DOM
+- JSX
+- Composants
+- State
+- Props
+- Cycle de vie
+- Événements
+- Condition
+- Liste
+- Formulaire
+
+---
+
+## Qu'est-ce que React ?
+- Bibliothèque créée par Facebook en 2013 
+- SPA (Single Page Application)
+- Permet de créer des interfaces utilisateurs
+- Utilise la Programmation Fonctionnelle
+---
+
+## Virtual DOM
+
+<ImageLayout image={"dom"}/>
+
+Le DOM effectue des traitements lourd lors de la mise à jour de l'un de ses éléments.
+
+---
+
+```js
+document.querySelector('#element').innerText = "New value"
+```
+
+- 1 - Le navigateur parse le fichier HTML
+- 2 - Suppression des éléments enfants
+- 3 - Mise à jour du DOM avec la nouvelle valeur
+- 4 - Re-calcul du CSS pour les éléments parent et enfants
+- 5 - Chaque élément est recalibré
+
+Lors du re-calcul du CSS et de la mise à jour du template, des algorithmes complexes sont utilisés.
+Chacune de ces étapes sont éxécutés lors de la mise à jour d'un élément (textes, css...)
+
+---
+
+### Définition du virtual DOM
+
+* Copie du DOM plus légère
+* Réduit le temps de mise à jour du DOM
+* Comprend un meilleur algorithme de comparaison
+
+---
+
+### Comment ca marche ?
+
+<ImageLayout image={"vdom"}/>
+
+Lorsqu'un événement est émis, et que celui-ci affecte le DOM, le second VDOM est créé. Ensuite un algorithme va comparer les deux VDOM, ce qui va permettre de mettre à jour seulement l'élément qui a été modifié dans le DOM.
+
+[VDOM](https://medium.com/@happymishra66/virtual-dom-in-reactjs-43a3fdb1d130)
+
+---
+
+## JSX
+
+Le JSX (JavaScript XML) est une extension au JavaScript qui comprend une synthaxe proche du XML. Le JSX peut aussi etre utilisé avec d'autres frameworks comme Vue par exemple. Comme en HTML, le JSX comprend des tags qui peuvent avoir de nombreux attributs.
+
+```js
+  const NavBar = () => (
+    <nav>
+      <ul>
+        <li>Home</li>
+        <li>About</li>
+        <li>Contact</li>
+      </ul>
+    </nav>
+  );
+```
+
+---
+
+### Quelle différence avec l'HTML ?
+
+* Permet d'insérer du JS
+* L'attribut `class` est remplacé par `className`
+* L'attribut `for` est remplacé par `htmlFor`
+* Il est possible d´insérer des conditions
+* Les attributs permettant d'appeler des événements sur un élément sont en camelCase, et le préfixe `on` a été ajouté à chacun d'entre eux
+
+```js
+  const NavBar = () => (
+    <nav>
+      <ul className="nav__content">
+        <li>Home</li>
+        <li>About</li>
+        <li>Contact</li>
+      </ul>
+    </nav>
+  );
+```
+
+[JSX](https://reactjs.org/docs/introducing-jsx.html)
+
+---
+
+## React CLI
+
+yarn
+```bash
+yarn global add create-react-app
+// OR
+yarn create react-app my-app
+```
+
+NPM
+```bash
+npm i -g create-react-app
+create-react-app my-app
+// OR (npm 6+)
+npm init react-app my-app
+```
+
+NPX
+```bash
+npx create-react-app my-app
+```
+
+[Create React App](https://github.com/facebook/create-react-app)
+
+---
+
+## Composants
+
+Il existe 2 types de composant en React : 
+- Class component
+- Functional component
+
+---
+
+### Class component
+
+```js
+import { Component } from 'react'
+ 
+class Title extends Component {
+  render() {
+    return (
+      <header>
+        <h1>Title</h1>
+      </header>
+    )
+  }
+}
+```
+
+***
+
+### Functional component
+
+```js
+const Title = () => (
+  <header>
+    <h1>Title</h1>
+  </header>
+);
+```
+
+[Components](https://reactjs.org/docs/components-and-props.html)
+
+---
+
+## Hook
+
+Depuis la version 16.8, React a ajouté les hooks. Cela nous permet de pouvoir appeller certaines méthodes natives à React (`useState`, `useEffect`...) depuis les functional components (ce qui n'était pas le cas avant). Même si les hooks nous permettent d'utiliser de plus en plus les functional components, l'utilisation des class component n'a pour autant pas disparu.
+
+[Hooks](https://reactjs.org/docs/hooks-intro.html)
+
+---
+
+## State
+
+Le state est un objet compris dans un composant. Cet objet comprend des données qui sont amenées à être modifié.
+
+```js
+import { useState } from 'react'
+ 
+const List = () => {
+  const [items, setItems] = useState(['apple', 'pear', 'pinapple'])
+   
+  return (
+    <ul>
+      <li>{items[0]}</li>
+      <li>{items[1]}</li>
+      <li>{items[2]}</li>
+    </ul>
+  )
+}
+```
+
+---
+
+```js
+import { Component } from 'react'
+ 
+class List extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items : ['apple', 'pear', 'pinapple']
+    }
+  }
+ 
+  render() {
+    const { items } = this.state;
+    return (
+      <ul>
+        <li>{items[0]}</li>
+        <li>{items[1]}</li>
+        <li>{items[2]}</li>
+      </ul>
+    )
+  }
+}
+```
+
+---
+
+Le state est immutable, il ne peut être modifié que via certaines méthodes.
+Il n'est pas possible de modifier une valeur de cette facon.
+
+```js
+const [items, setItems] = useState(['apple', 'pear', 'pinapple'])
+items = [...items, 'watermelon']
+```
+
+```js
+this.state.items = [...this.state.items, 'watermelon']
+```
+
+---
+
+```js
+const List = () => {
+  const [items, setItems] = useState(['apple', 'pear', 'pinapple'])
+  
+  return (
+    <div>
+      <ul>
+        <li>{items[0]}</li>
+        <li>{items[1]}</li>
+        <li>{items[2]}</li>
+      </ul>
+      <button onClick={() => setItems([...items, 'watermelon'])}>Add watermelon</button>
+    </div>
+  )
+}
+```
+
+---
+
+```js
+class List extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items : ['apple', 'pear', 'pinapple']
+    }
+  }
+ 
+  render() {
+    const { items } = this.state
+    return (
+      <div>
+        <ul>
+          <li>{items[0]}</li>
+          <li>{items[1]}</li>
+          <li>{items[2]}</li>
+        </ul>
+        <button onClick={() => this.setState((prevState) => ({ items : [...prevState.items, 'watermelon'] }))}>Add Watermelon</button>
+      </div>
+    )
+  }
+}
+```
+
+[State](https://reactjs.org/docs/state-and-lifecycle.html)
+
+---
+
+## Props
+
+Les props sont les paramètres donnés à un composant. Ils vont permettre à un composant parent d'envoyer une ou plusieurs valeurs à un composant enfant. Les props sont en lecture seule, on ne peut pas les modifier.
+
+```js
+const Item = ({ item }) => (
+  <li>
+    <p>{item}</p>
+    <button>Remove</button>
+  </li>
+)
+ 
+const List = () => {
+  const [items, setItems] = useState(['apple', 'pear', 'pinapple'])
+  return (
+    <ul>
+      <Item item={items[0]} />
+      <Item item={items[1]} />
+      <Item item={items[2]} />
+    </ul>
+  )
+}
+```
+
+---
+
+```js
+class Item extends Component {
+  constructor(props) {
+    super(props);
+  }
+ 
+  render() {
+    return (
+      <li>
+        <p>{this.props.item}</p>
+        <button>Remove</button>
+      </li>
+    )
+  }
+}
+ 
+class List extends Component {
+  constructor() {
+    super();
+    this.state = {
+      items : ['apple', 'pear', 'pinapple']
+    }
+  }
+ 
+  render() {
+    const { items } = this.state
+    return (
+      <ul>
+        <Item item={items[0]} />
+        <Item item={items[1]} />
+        <Item item={items[2]} />
+      </ul>
+    )
+  }
+}
+```
+
+---
+
+Il est aussi tout à fait possible de passer des méthodes en props au composant enfant.
+
+```js
+const Item = ({ item, removeItem }) => (
+  <li>
+    <p>{item}</p>
+    <button onClick={() => removeItem(item)}>Remove</button>
+  </li>
+)
+
+const List = () => {
+  const [items, setItems] = useState(['apple', 'pear', 'pinapple'])
+  const removeItem = itemName => {
+    setItems(...items.filter(item => item !== itemName))
+  }
+
+  return (
+    <ul>
+      <Item item={items[0]} removeItem={removeItem} />
+      <Item item={items[1]} removeItem={removeItem} />
+      <Item item={items[2]} removeItem={removeItem} />
+    </ul>
+  )
+}
+```
+[Props](https://reactjs.org/docs/render-props.html)
+
+---
+
+## Évènements
+
+Gérer les évènements en React est assez similaire à la gestion des évènements en JavaScript.
+Les différences entre les deux sont les suivantes : 
+* Les évènements React sont ecrit en camelCase avec comme prefixe `on`
+* En JSX on passera une fonction a l'évènement, et non pas une string
+
+```js
+const List = () => {
+  const [items, setItems] = useState(['apple', 'pear', 'pinapple'])
+
+  const addItem = item => {
+    setItems([...items, item])
+  }
+
+  return (
+    <div>
+      <ul>
+        {items.map(item => <Item key={item} item={item}/>)}
+      </ul>
+      <button onClick={() => addItem('peach')}>Add item</button>
+    </div>
+  )
+} 
+```
+
+---
+
+```js
+class List extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items : ['apple', 'pear', 'pinapple']
+    }
+
+    this.addItem = this.addItem.bind(this);
+  }
+
+  addItem(item){
+    this.setState(prevState => ({
+      items: [...prevState.items, item]
+    }))
+  }
+
+  render() {
+    const { items } = this.state
+    return (
+      <div>
+        <ul>
+          {items.map(item => <Item key={item} item={item}/>)}
+        </ul>
+        <button onClick={() => this.addItem('peach')}>Add item</button>
+        {/* If addItem has no parameter */}
+        <button onClick={this.addItem}>Add item</button>
+      </div>
+    )
+  }
+}
+```
+
+[Events](https://reactjs.org/docs/handling-events.html)
+
+---
+
+## Cycle de vie
+
+React comporte des méthodes permettant d'effectuer des actions à certains moments du cycle de vie du composant.
+
+<ImageLayout image={"lifecycle"} title={""} />
+
+---
+### componentDidMount / useEffect
+
+Cette méthode est la première appelée lorsque le composant est monté.
+
+```js
+import { useEffect } from 'react'
+ 
+const List = () => {
+  const [items, setItems] = useState([])
+ 
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/items')
+      .then(res => res.json())
+      .then(setItems)
+      .catch(console.error);
+  })
+  
+  return (
+    <ul>
+      {items.map(item => <Item key={item} item={item}/>)}
+    </ul>
+  )
+}
+```
+
+---
+
+```js
+class List extends Component {
+  constructor() {
+    super();
+    this.state = {
+      items : []
+    }
+  }
+ 
+  componentDidMount(){
+    fetch('https://jsonplaceholder.typicode.com/items')
+      .then(res => res.json())
+      .then(data => this.setData({ items: data }))
+      .catch(console.error);
+  }
+ 
+  render() {
+    const { items } = this.state
+    return (
+      <ul>
+        {items.map(item => <Item key={item} item={item} />)}
+      </ul>
+    )
+  }
+}
+```
+
+---
+
+### componentDidUpdate
+
+Cette méthode est appelée dans une class component lorsqu'une data ou/et une props a été modifié.
+En ce qui concerne les functionals components, la méthode sera appelé lorsque la/les variable(s) spécifié(s) au hook `useEffect` ont/a été modifié(s).
+
+```js
+import { useEffect } from 'react'
+ 
+const List = () => {
+  const [items, setItems] = useState(['apple', 'pear', 'pinapple'])
+  const [title, setTitle] = useState('Fruits')
+ 
+  useEffect(() => {
+    document.title = `${title} | There are ${items.length} items`;
+  }, [items, title])
+ 
+  return (
+    <div>
+      <h1>{title}</h1>
+      <ul>
+        {items.map(item => <Item key={item} item={item}/>)}
+      </ul>
+    </div>
+  )
+}
+```
+
+---
+
+```js
+class List extends Component {
+  constructor() {
+    super();
+    this.state = {
+      items : ['apple', 'pear', 'pinapple'],
+      title: 'Fruits'
+    }
+  }
+ 
+  componentDidUpdate() {
+    document.title = `${title} | There are ${items.length} items`;
+  }
+ 
+  render() {
+    const { items } = this.state
+    return (
+      <div>
+        <h1>{title}</h1>
+        <ul>
+          {items.map(item => <Item key={item} item={item}/>)}
+        </ul>
+      </div>
+    )
+  }
+}
+```
+
+---
+
+### componentWillUnmount
+
+Cette méthode est appelée avant que le composant ne soit détruit.
+
+```js
+import { useEffect, useState } from 'react'
+ 
+const List = () => {
+  const [items, setItems] = useState(['apple', 'pear', 'pinapple'])
+ 
+  useEffect(() => {
+    return function cleanup() {
+      console.log('unmount');
+    }
+  })
+  
+  return (
+    <ul>
+      {items.map(item => <Item key={item} item={item}/>)}
+    </ul>
+  )
+}
+```
+
+---
+
+```js
+class List extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items : ['apple', 'pear', 'pinapple']
+    }
+  }
+ 
+  componentWillUnmount(){
+    console.log('unmount');
+  }
+ 
+  render() {
+    const { items } = this.state
+    return (
+      <ul>
+        {items.map(item => <Item key={item} item={item} />)}
+      </ul>
+    )
+  }
+}
+```
+
+[Lifecycle](https://reactjs.org/docs/state-and-lifecycle.html)
+[useEffect](https://reactjs.org/docs/hooks-effect.html)
+
+---
+
+## Condition
+
+En React, il est possible d'ajouter des conditions afin d'afficher ou non des composants.
+
+```js
+const NavBar = ({ user }) => (
+  <nav>
+    <ul>
+      <li>Home</li>
+      <li>About</li>
+      {user && <li>Profile</li>}
+      {/* ou */}
+      {user ? <li>Deconnexion</li> : <li>Connexion</li>}
+    </ul>
+  </nav>
+)
+```
+
+[Conditions](https://reactjs.org/docs/conditional-rendering.html)
+
+---
+
+## Listes
+
+Afin d'afficher une liste d'éléments ou/et de composants, React utilise la méthode `map` en JSX. Un attribut key doit être ajouté a l'élément qui est retourné par cette méthode pour que React puisse le trouver plus facilement.
+Il est préférable de ne pas mettre comme valeur l'index du tableau. L'attribut key doit toujours avoir une valeur différente pour chaque élément rendu.
+
+```js
+const List = ({ items }) => (
+  <ul>
+    {items.map(item => <Item key={item.name} item={item} />)}
+    {/* A ne pas faire */}
+    {items.map((item, index) => <Item key={index} item={item} />)}
+  </ul>
+)
+```
+
+[List](https://reactjs.org/docs/lists-and-keys.html)
+
+---
+
+## Formulaires
+
+```js
+const UserForm = () => {
+  const [username, setUsername] = useState('')
+  const submitForm = async () => {
+    try {
+      await fetch('https://jsonplaceholder.typicode.com/users', {
+        method: 'POST',
+        body: JSON.stringify({ username })  
+      })
+    } catch(e) {
+      throw e;
+    }
+  }
+ 
+  const handleUsernameField = e => setUsername(e.target.value)
+ 
+  return (
+    <form onSubmit={submitForm}>
+      <label htmlFor="username">Username</label>
+      <input type="text" id="username" name="username" onChange={handleUsernameField} value={username} />
+      {/* Ou */}
+      <input type="text" id="username" name="username" onChange={e => handleUsernameField(e)} />
+      <button type="submit">Submit</button>
+    </form>
+  )
+}
+
+```
+
+[Forms](https://reactjs.org/docs/forms.html)
