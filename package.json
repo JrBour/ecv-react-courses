@@ -1,7 +1,7 @@
 {
-  "name": "ecv-api-courses",
+  "name": "ecv-react-courses",
   "version": "1.0.1",
-  "description": "ECV - API - Courses - Lucas Moisan - 2019",
+  "description": "ECV - React - Courses - Jeremy Bourel - 2020",
   "main": "lib/index.js",
   "scripts": {
     "clean": "rimraf dist",
