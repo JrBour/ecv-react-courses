@@ -156,7 +156,7 @@ Il existe de nombreuses manières d'architecturer ses dossiers/fichiers liés à
 
 **todos/reducer.js**
 ```js
-  import { combineReducers, createStore } from 'redux'
+  import { combineReducers, createStore } from 'redux';
   import todos from '@/store/todo/reducer';
   import users from '@/store/user/reducer';
 
@@ -198,7 +198,7 @@ Pour commencer il faut initialiser le store dans le fichier `index.js`.
 Dans le fichier `store/index.js` doivent être appelés les méthodes permettant de créer le store et de combiner/fusionner plusieurs reducers entre eux.
 
 ```js
-	import { combineReducers, createStore } from 'redux'
+	import { combineReducers, createStore } from 'redux';
 	import todos from '@/store/todo/reducer';
 	import users from '@/store/user/reducer';
  
