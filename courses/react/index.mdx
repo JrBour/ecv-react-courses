@@ -212,8 +212,8 @@ const List = () => {
 import { Component } from 'react'
  
 class List extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       items : ['apple', 'pear', 'pinapple']
     }
@@ -258,6 +258,7 @@ const List = () => {
         <li>{items[0]}</li>
         <li>{items[1]}</li>
         <li>{items[2]}</li>
+        <li>{items[3]}</li>
       </ul>
       <button onClick={() => setItems([...items, 'watermelon'])}>Add watermelon</button>
     </div>
@@ -269,8 +270,8 @@ const List = () => {
 
 ```js
 class List extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       items : ['apple', 'pear', 'pinapple']
     }
@@ -285,7 +286,7 @@ class List extends Component {
           <li>{items[1]}</li>
           <li>{items[2]}</li>
         </ul>
-        <button onClick={() => this.setState((prevState) => ({ items : [...prevState.items, 'watermelon'] }))}>Add Watermelon</button>
+        <button onClick={() => this.setState(prevState => ({ items : [...prevState.items, 'watermelon'] }))}>Add Watermelon</button>
       </div>
     )
   }
@@ -310,6 +311,7 @@ const Item = ({ item }) => (
  
 const List = () => {
   const [items, setItems] = useState(['apple', 'pear', 'pinapple'])
+ 
   return (
     <ul>
       <Item item={items[0]} />
@@ -324,10 +326,6 @@ const List = () => {
 
 ```js
 class Item extends Component {
-  constructor(props) {
-    super(props);
-  }
- 
   render() {
     return (
       <li>
@@ -370,13 +368,14 @@ const Item = ({ item, removeItem }) => (
     <button onClick={() => removeItem(item)}>Remove</button>
   </li>
 )
-
+ 
 const List = () => {
   const [items, setItems] = useState(['apple', 'pear', 'pinapple'])
+ 
   const removeItem = itemName => {
-    setItems(...items.filter(item => item !== itemName))
+    setItems(items.filter(item => item !== itemName))
   }
-
+ 
   return (
     <ul>
       <Item item={items[0]} removeItem={removeItem} />
@@ -400,15 +399,18 @@ Les différences entre les deux sont les suivantes :
 ```js
 const List = () => {
   const [items, setItems] = useState(['apple', 'pear', 'pinapple'])
-
+ 
   const addItem = item => {
     setItems([...items, item])
   }
-
+ 
   return (
     <div>
       <ul>
-        {items.map(item => <Item key={item} item={item}/>)}
+        <Item item={items[0]} />
+        <Item item={items[1]} />
+        <Item item={items[2]} />
+        <Item item={items[3]} />
       </ul>
       <button onClick={() => addItem('peach')}>Add item</button>
     </div>
@@ -425,26 +427,25 @@ class List extends Component {
     this.state = {
       items : ['apple', 'pear', 'pinapple']
     }
-
-    this.addItem = this.addItem.bind(this);
   }
-
+ 
   addItem(item){
     this.setState(prevState => ({
       items: [...prevState.items, item]
     }))
   }
-
+ 
   render() {
     const { items } = this.state
     return (
       <div>
         <ul>
-          {items.map(item => <Item key={item} item={item}/>)}
+          <Item item={items[0]} />
+          <Item item={items[1]} />
+          <Item item={items[2]} />
+          <Item item={items[3]} />
         </ul>
         <button onClick={() => this.addItem('peach')}>Add item</button>
-        {/* If addItem has no parameter */}
-        <button onClick={this.addItem}>Add item</button>
       </div>
     )
   }
@@ -473,15 +474,17 @@ const List = () => {
   const [items, setItems] = useState([])
  
   useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/items')
+    fetch('https://jsonplaceholder.typicode.com/todos')
       .then(res => res.json())
-      .then(setItems)
+      .then(res => setItems(res.map(({ title }) => title)))
       .catch(console.error);
-  })
+  }, [])
   
   return (
     <ul>
-      {items.map(item => <Item key={item} item={item}/>)}
+      <Item item={items[0]} />
+      <Item item={items[1]} />
+      <Item item={items[2]} />
     </ul>
   )
 }
@@ -498,10 +501,10 @@ class List extends Component {
     }
   }
  
-  componentDidMount(){
-    fetch('https://jsonplaceholder.typicode.com/items')
+  componentDidMount() {
+    fetch('https://jsonplaceholder.typicode.com/todos')
       .then(res => res.json())
-      .then(data => this.setData({ items: data }))
+      .then(data => this.setState({ items: data.map(({ title }) => title) }))
       .catch(console.error);
   }
  
@@ -509,7 +512,9 @@ class List extends Component {
     const { items } = this.state
     return (
       <ul>
-        {items.map(item => <Item key={item} item={item} />)}
+        <Item item={items[0]} />
+        <Item item={items[1]} />
+        <Item item={items[2]} />
       </ul>
     )
   }
@@ -538,7 +543,9 @@ const List = () => {
     <div>
       <h1>{title}</h1>
       <ul>
-        {items.map(item => <Item key={item} item={item}/>)}
+        <Item item={items[0]} />
+        <Item item={items[1]} />
+        <Item item={items[2]} />
       </ul>
     </div>
   )
@@ -558,17 +565,27 @@ class List extends Component {
   }
  
   componentDidUpdate() {
+    const { title, items } = this.state
     document.title = `${title} | There are ${items.length} items`;
   }
  
+  removeItem(name){
+    this.setState(({ items }) => ({
+      items: items.filter(item => item !== name)
+    }))
+  }
+ 
   render() {
-    const { items } = this.state
+    const { title, items } = this.state
     return (
       <div>
         <h1>{title}</h1>
         <ul>
-          {items.map(item => <Item key={item} item={item}/>)}
+          <Item item={items[0]} />
+          <Item item={items[1]} />
+          <Item item={items[2]} />
         </ul>
+        <button onClick={() => this.removeItem('apple')}>Remove item</button>
       </div>
     )
   }
@@ -584,14 +601,22 @@ Cette méthode est appelée avant que le composant ne soit détruit.
 ```js
 import { useEffect, useState } from 'react'
  
-const List = () => {
-  const [items, setItems] = useState(['apple', 'pear', 'pinapple'])
- 
+const Item = ({ item }) => {
   useEffect(() => {
-    return function cleanup() {
+    return () => {
       console.log('unmount');
     }
-  })
+  }, [])
+  
+  return (
+    <li>
+      {item}
+    </li>
+  )
+}
+ 
+const List = () => {
+  const [items, setItems] = useState(['apple', 'pear', 'pinapple'])
   
   return (
     <ul>
@@ -604,24 +629,17 @@ const List = () => {
 ---
 
 ```js
-class List extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      items : ['apple', 'pear', 'pinapple']
-    }
-  }
- 
+class Item extends Component {
   componentWillUnmount(){
     console.log('unmount');
   }
  
   render() {
-    const { items } = this.state
+    const { item } = this.props
     return (
-      <ul>
-        {items.map(item => <Item key={item} item={item} />)}
-      </ul>
+      <li>
+        {item}
+      </li>
     )
   }
 }
