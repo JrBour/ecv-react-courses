@@ -2,7 +2,7 @@
   "name": "ecv-react-courses",
   "version": "1.0.1",
   "description": "ECV - React - Courses - Jeremy Bourel - 2020",
-  "main": "lib/index.js",
+  "main": "server.js",
   "scripts": {
     "clean": "rimraf dist",
     "build": "webpack --config webpack.config.production.js",
