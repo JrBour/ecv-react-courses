@@ -71,7 +71,7 @@ Lorsqu'un événement est émis, et que celui-ci affecte le DOM, le second VDOM 
 
 ## JSX
 
-Le JSX (JavaScript XML) est une extension au JavaScript qui comprend une synthaxe proche du XML. Le JSX peut aussi etre utilisé avec d'autres frameworks comme Vue par exemple. Comme en HTML, le JSX comprend des tags qui peuvent avoir de nombreux attributs.
+Le JSX (JavaScript XML) est une extension au JavaScript qui comprend une syntaxe proche du XML. Le JSX peut aussi etre utilisé avec d'autres frameworks comme Vue par exemple. Comme en HTML, le JSX comprend des tags qui peuvent avoir de nombreux attributs.
 
 ```js
   const NavBar = () => (
@@ -92,7 +92,7 @@ Le JSX (JavaScript XML) est une extension au JavaScript qui comprend une synthax
 * Permet d'insérer du JS
 * L'attribut `class` est remplacé par `className`
 * L'attribut `for` est remplacé par `htmlFor`
-* Il est possible d´insérer des conditions
+* Il est possible d'insérer des conditions
 * Les attributs permettant d'appeler des événements sur un élément sont en camelCase, et le préfixe `on` a été ajouté à chacun d'entre eux
 
 ```js
@@ -180,7 +180,7 @@ const Title = () => (
 
 ## Hook
 
-Depuis la version 16.8, React a ajouté les hooks. Cela nous permet de pouvoir appeller certaines méthodes natives à React (`useState`, `useEffect`...) depuis les functional components (ce qui n'était pas le cas avant). Même si les hooks nous permettent d'utiliser de plus en plus les functional components, l'utilisation des class component n'a pour autant pas disparu.
+Depuis la version 16.8, React a ajouté les hooks. Cela nous permet de pouvoir appeller certaines méthodes natives à React (`useState`, `useEffect`...) depuis les functional components (ce qui n'était pas le cas avant). Même si les hooks nous permettent d'utiliser de plus en plus les functional components, l'utilisation des class components n'a pour autant pas disparu.
 
 [Hooks](https://reactjs.org/docs/hooks-intro.html)
 
@@ -389,11 +389,30 @@ const List = () => {
 
 ---
 
+## Listes
+
+Afin d'afficher une liste d'éléments ou/et de composants, React utilise la méthode `map` en JSX. Un attribut key doit être ajouté a l'élément qui est retourné par cette méthode pour que React puisse le trouver plus facilement.
+Il est préférable de ne pas mettre comme valeur l'index du tableau. L'attribut key doit toujours avoir une valeur différente pour chaque élément rendu.
+
+```js
+const List = ({ items }) => (
+  <ul>
+    {items.map(item => <Item key={item.name} item={item} />)}
+    {/* A ne pas faire */}
+    {items.map((item, index) => <Item key={index} item={item} />)}
+  </ul>
+)
+```
+
+[List](https://reactjs.org/docs/lists-and-keys.html)
+
+---
+
 ## Évènements
 
 Gérer les évènements en React est assez similaire à la gestion des évènements en JavaScript.
 Les différences entre les deux sont les suivantes : 
-* Les évènements React sont ecrit en camelCase avec comme prefixe `on`
+* Les évènements React sont écrit en camelCase avec comme préfixe `on`
 * En JSX on passera une fonction a l'évènement, et non pas une string
 
 ```js
@@ -407,10 +426,7 @@ const List = () => {
   return (
     <div>
       <ul>
-        <Item item={items[0]} />
-        <Item item={items[1]} />
-        <Item item={items[2]} />
-        <Item item={items[3]} />
+        {items.map(item => <Item key={item} item={item} />)}
       </ul>
       <button onClick={() => addItem('peach')}>Add item</button>
     </div>
@@ -440,10 +456,7 @@ class List extends Component {
     return (
       <div>
         <ul>
-          <Item item={items[0]} />
-          <Item item={items[1]} />
-          <Item item={items[2]} />
-          <Item item={items[3]} />
+          {items.map(item => <Item key={item} item={item} />)}
         </ul>
         <button onClick={() => this.addItem('peach')}>Add item</button>
       </div>
@@ -482,9 +495,7 @@ const List = () => {
   
   return (
     <ul>
-      <Item item={items[0]} />
-      <Item item={items[1]} />
-      <Item item={items[2]} />
+      {items.map(item => <Item key={item} item={item} />)}
     </ul>
   )
 }
@@ -512,9 +523,7 @@ class List extends Component {
     const { items } = this.state
     return (
       <ul>
-        <Item item={items[0]} />
-        <Item item={items[1]} />
-        <Item item={items[2]} />
+        {items.map(item => <Item key={item} item={item} />)}
       </ul>
     )
   }
@@ -543,9 +552,7 @@ const List = () => {
     <div>
       <h1>{title}</h1>
       <ul>
-        <Item item={items[0]} />
-        <Item item={items[1]} />
-        <Item item={items[2]} />
+        {items.map(item => <Item key={item} item={item} />)}
       </ul>
     </div>
   )
@@ -581,9 +588,7 @@ class List extends Component {
       <div>
         <h1>{title}</h1>
         <ul>
-          <Item item={items[0]} />
-          <Item item={items[1]} />
-          <Item item={items[2]} />
+          {items.map(item => <Item key={item} item={item} />)}
         </ul>
         <button onClick={() => this.removeItem('apple')}>Remove item</button>
       </div>
@@ -669,25 +674,6 @@ const NavBar = ({ user }) => (
 ```
 
 [Conditions](https://reactjs.org/docs/conditional-rendering.html)
-
----
-
-## Listes
-
-Afin d'afficher une liste d'éléments ou/et de composants, React utilise la méthode `map` en JSX. Un attribut key doit être ajouté a l'élément qui est retourné par cette méthode pour que React puisse le trouver plus facilement.
-Il est préférable de ne pas mettre comme valeur l'index du tableau. L'attribut key doit toujours avoir une valeur différente pour chaque élément rendu.
-
-```js
-const List = ({ items }) => (
-  <ul>
-    {items.map(item => <Item key={item.name} item={item} />)}
-    {/* A ne pas faire */}
-    {items.map((item, index) => <Item key={index} item={item} />)}
-  </ul>
-)
-```
-
-[List](https://reactjs.org/docs/lists-and-keys.html)
 
 ---
 

@@ -6,11 +6,9 @@ import theme from "./theme";
 
 const images = {
   wizardsLogo: require("./assets/logoWT.png"),
-  restLevels: require("./assets/rest-levels.png"),
   dom: require("./assets/dom.png"),
   vdom: require("./assets/vdom.png"),
   showsDiagram: require("./assets/shows.png"),
-  ecvDiagram: require("./assets/ecv.png"),
   flux: require("./assets/flux.png"),
   store: require("./assets/store.png"),
   lifecycle: require("./assets/lifecycle.png")
