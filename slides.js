@@ -8,7 +8,6 @@ const images = {
   wizardsLogo: require("./assets/logoWT.png"),
   dom: require("./assets/dom.png"),
   vdom: require("./assets/vdom.png"),
-  showsDiagram: require("./assets/shows.png"),
   flux: require("./assets/flux.png"),
   store: require("./assets/store.png"),
   lifecycle: require("./assets/lifecycle.png")
