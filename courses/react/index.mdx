@@ -18,6 +18,8 @@ import {DarkSlide, CodeSlide, ImageLayout} from '../../slides';
 - Cycle de vie
 - Condition
 - Formulaire
+- Router
+- Fragment
 
 ---
 
@@ -115,16 +117,11 @@ Le JSX (JavaScript XML) est une extension au JavaScript qui comprend une syntaxe
 
 yarn
 ```bash
-yarn global add create-react-app
-// OR
 yarn create react-app my-app
 ```
 
 NPM
 ```bash
-npm i -g create-react-app
-create-react-app my-app
-// OR (npm 6+)
 npm init react-app my-app
 ```
 
@@ -326,6 +323,10 @@ const List = () => {
 
 ```js
 class Item extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
       <li>
@@ -709,6 +710,117 @@ const UserForm = () => {
 ```
 
 [Forms](https://reactjs.org/docs/forms.html)
+
+---
+
+## Router
+
+La bibliothèque permettant l'ajout d'un router à une application React est `react-router-dom`
+
+```bash
+  yarn add react-router-dom
+  # OR
+  npm install react-router-dom
+```
+
+```js
+  import {
+    BrowserRouter as Router,
+    Switch,
+    Route
+  } from "react-router-dom";
+  import Post from './pages/post'
+  import PostList from './pages/postList'
+  import Home from './pages/home'
+ 
+  const App = () => (
+    <Router>
+      <Switch>
+        <Route path="/" exact component={Home} />
+        <Route path="/post" exact component={PostList} />
+        <Route path="/post/:id" exact component={Post} />
+      </Switch>
+    </Router>
+  );
+```
+
+---
+
+```js
+import { useHistory, useParams, useLocation, Link } from 'react-router-dom';
+ 
+const Post = () => {
+  const history = useHistory();
+  const { id } = useParams();
+  const location = useLocation();
+ 
+  return (
+    <div>
+      <h1>Cette article a l'id : {id}</h1>
+      <Link to="/"><button>Home page</button></Link>
+      <button onClick={() => history.push('/')}>Home page</button>
+    </div>
+  )
+}
+
+```
+
+---
+
+```js
+  import { Component } from 'react';
+  import { withRouter, Link } from 'react-router-dom';
+  
+  class Post extends Component {
+    constructor(props){
+      super(props);
+    }
+  
+    render(){
+      const { history, match: { params: { id } } } = this.props;
+      return (
+        <div>
+          <h1>Cette article a l'id : {id}</h1>
+          <Link to="/"><button>Home page</button></Link>
+          <button onClick={() => this.props.history.push('/')}>Home page</button>
+        </div>
+      )
+    }
+  }
+ 
+ export defaut withRouter(Post);
+```
+
+[React-router](https://reactrouter.com/)
+
+---
+
+## Fragment
+
+Les fragments permettent de retourner un groupe de composants/éléments sans avoir à ajouter un élément parent.
+
+
+```js
+const Input = ({ label, value, handleChange }) => (
+  <>
+    <label>{label}</label>
+    <input type="text" value={value} onChange={handleChange} />
+  </>
+)
+```
+
+```js
+import { Fragment } from 'react'
+ 
+const Input = ({ label, value, handleChange }) => (
+  <Fragment>
+    <label>{label}</label>
+    <input type="text" value={value} onChange={handleChange} />
+  </Fragment>
+)
+```
+
+[Fragment](https://reactjs.org/docs/fragments.html)
 
 ---
 

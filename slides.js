@@ -10,7 +10,8 @@ const images = {
   vdom: require("./assets/vdom.png"),
   flux: require("./assets/flux.png"),
   store: require("./assets/store.png"),
-  lifecycle: require("./assets/lifecycle.png")
+  lifecycle: require("./assets/lifecycle.png"),
+  console: require("./assets/screen-console.png")
 };
 // DEFAULT LAYOUT
 export const DefaultSlide = ({ children, ...rest }) => (
