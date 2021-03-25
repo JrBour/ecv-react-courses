@@ -68,7 +68,6 @@ const todos = (state = initialState, action) => {
   switch(action.type){
     case 'todos/addItem': 
       return [...state, {...action.payload}]
-      }
     case 'todos/removeItem': 
       return state.todos.filter(item => item.name !== action.payload.name)
     default:
@@ -150,7 +149,6 @@ Il existe de nombreuses manières d'architecturer ses dossiers/fichiers liés à
     switch(action.type){
       case 'todos/addItem': 
         return [...state, {...action.payload}]
-        }
       case 'todos/removeItem': 
         return state.todos.filter(item => item.name !== action.payload.name)
       default:
