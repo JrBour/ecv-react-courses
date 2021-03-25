@@ -48,7 +48,7 @@ Une action est un objet qui contient une propriété `type` et peut aussi conten
 
 ```js
 export const AddItemAction = payload => ({
-    type: 'todo/addItem',
+    type: 'todos/addItem',
     payload
 })
 ```
@@ -62,22 +62,15 @@ export const AddItemAction = payload => ({
 Un reducer est une méthode qui reçoit comme paramètre le state (store) ainsi qu'une action. Dans cette méthode, une ou plusieurs conditions comprises dans un switch/case seront présentes, afin de savoir qu'elle type d'action a été appelé, et quelle opération doit être effectuée pour mettre à jour le store.
 
 ```js
-const initialState = {
-  todos: []
-}
+const initialState = []
  
 const todos = (state = initialState, action) => {
   switch(action.type){
-    case 'todo/addItem': 
-      return {
-        ...state,
-        todos: [...state.todos, {...action.payload}]
+    case 'todos/addItem': 
+      return [...state, {...action.payload}]
       }
-    case 'todo/removeItem': 
-      return {
-        ...state,
-        todos: state.todos.filter(item => item.name !== action.payload.name)
-      }
+    case 'todos/removeItem': 
+      return state.todos.filter(item => item.name !== action.payload.name)
     default:
       return state;
   }
@@ -134,7 +127,7 @@ Il existe de nombreuses manières d'architecturer ses dossiers/fichiers liés à
 ```
 
 
-**todos/action.js**
+**todos/actions.js**
 ```js
   export const addItemAction = payload => ({
     type: 'todos/addItem',
@@ -145,32 +138,28 @@ Il existe de nombreuses manières d'architecturer ses dossiers/fichiers liés à
     type: 'todos/removeItem',
     payload
   });
- 
-  export const editItemAction = payload => ({
-    type: 'todos/editItem',
-    payload
-  })
-```
+ ```
 
 ---
 
-**todos/reducer.js**
+**todos/reducers.js**
 ```js
-  import { combineReducers, createStore } from 'redux';
-  import todos from '@/store/todo/reducer';
-  import users from '@/store/user/reducer';
-
-  const reducers = combineReducers({
-    todos,
-    users
-  })
+  const initialState = []
  
-  const store = createStore(reducers)
- 
-  export defaut store;
+  const todos = (state = initialState, action) => {
+    switch(action.type){
+      case 'todos/addItem': 
+        return [...state, {...action.payload}]
+        }
+      case 'todos/removeItem': 
+        return state.todos.filter(item => item.name !== action.payload.name)
+      default:
+        return state;
+    }
+  }
 ```
 
-**todos/selector.js**
+**todos/selectors.js**
 ```js
    export const getTodoList = state => state.todo;
 ```
@@ -282,7 +271,7 @@ Comme en react, redux comprend des hooks. Cela nous évite l'utilisation des mé
     
     const handleChange = ({ target: { value } }) => setNewItem(value);
     const addTask = () => {
-      dispatch(addItem(newItem))
+      dispatch(state => addItem(state, newItem))
     }
   
     return (
@@ -318,22 +307,20 @@ L'architecture recommandée pour utiliser Redux Toolkit avec les slices est Duck
 ```js
   import { createSlice } from '@reduxjs/toolkit';
   
-  const initialState = {
-      todos: []
-  };
+  const initialState = []
   
   const todos = createSlice({
     name: 'todos',
     initialState,
     reducers: {
       addItem(state, { payload }){
-        state.todos = [...state.todos, payload]
+        state = [...state, payload]
       },
       editItem(state, { payload }){
-        state.todos = [...state.todos.map(item => item.id === action.payload.id ? action.payload : item)]    
+        state = [...state.map(item => item.id === action.payload.id ? action.payload : item)]    
       },
       removeItem(state, { payload }){
-        state.todos = [...state.items.filter(item => item.id !== action.payload.id)]    
+        state = [...state.filter(item => item.id !== action.payload.id)]    
       },
     }
   });
@@ -350,5 +337,5 @@ L'architecture recommandée pour utiliser Redux Toolkit avec les slices est Duck
 ---
 
 ## Annexes
-[Getting started with redux](https://egghead.io/courses/getting-started-with-redux)
-[Learning ressources](https://redux.js.org/introduction/learning-resources)
+* [Getting started with redux](https://egghead.io/courses/getting-started-with-redux)
+* [Learning ressources](https://redux.js.org/introduction/learning-resources)
