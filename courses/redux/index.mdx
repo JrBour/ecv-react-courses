@@ -186,8 +186,8 @@ Dans le fichier `store/index.js` doivent être appelés les méthodes permettant
 
 ```js
 	import { combineReducers, createStore } from 'redux';
-	import todos from '@/store/todo/reducer';
-	import users from '@/store/user/reducer';
+	import todos from '@/store/todos/reducers';
+	import users from '@/store/users/reducers';
  
 	const reducers = combineReducers({
 		todos,
