@@ -269,7 +269,7 @@ Comme en react, redux comprend des hooks. Cela nous évite l'utilisation des mé
     
     const handleChange = ({ target: { value } }) => setNewItem(value);
     const addTask = () => {
-      dispatch(state => addItem(state, newItem))
+      dispatch(addItem(newItem))
     }
   
     return (
