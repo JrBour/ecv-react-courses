@@ -305,20 +305,22 @@ L'architecture recommandée pour utiliser Redux Toolkit avec les slices est Duck
 ```js
   import { createSlice } from '@reduxjs/toolkit';
   
-  const initialState = []
+  const initialState = {
+    list: []
+  }
   
   const todos = createSlice({
     name: 'todos',
     initialState,
     reducers: {
       addItem(state, { payload }){
-        state = [...state, payload]
+        state.list = [...state.list, payload]
       },
       editItem(state, { payload }){
-        state = [...state.map(item => item.id === payload.id ? payload : item)]    
+        state = [...state.list.map(item => item.id === payload.id ? payload : item)]    
       },
       removeItem(state, { payload }){
-        state = [...state.filter(item => item.id !== payload.id)]    
+        state = [...state.list.filter(item => item.id !== payload.id)]    
       },
     }
   });
@@ -329,7 +331,7 @@ L'architecture recommandée pour utiliser Redux Toolkit avec les slices est Duck
       removeItem
   } = todos.actions;
 
-  export defaut todos.reducers;
+  export defaut todos.reducer;
 ```
 
 [Redux-toolkit](https://redux-toolkit.js.org/) -
