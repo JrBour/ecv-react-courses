@@ -339,6 +339,43 @@ L'architecture recommandée pour utiliser Redux Toolkit avec les slices est Duck
 
 ---
 
+Pour créer le store, la méthode `configureStore` doit être utilisé. Elle remplace la méthode `createStore` de react-redux.
+
+```js
+  import { combineReducers } from 'redux';
+  import { configureStore } from '@reduxjs/toolkit';
+  import articles from './articles';
+
+  const reducer = combineReducers({
+      articles,
+  })
+
+  const store = configureStore({ reducer, devTools: true });
+
+  export defaut store;
+```
+
+[configureStore](https://redux-toolkit.js.org/api/configureStore)
+
+---
+
+## Redux Thunk
+
+Redux Thunk est un middleware permettant l'utilisation d'action asynchrone afin de pouvoir y effectuer des appels API par exemple.
+Grace a l'acces a la methode `dispatch` et au state, il est possible de pouvoir y appeller des actions/selectors directement depuis les actions aynchrones.
+
+```
+
+// Fous l'exemple de l'exercice de la derniere fois
+// Edit summary
+
+```
+
+[Redux Thunk](https://github.com/reduxjs/redux-thunk)
+[Redux middleware](https://redux.js.org/tutorials/fundamentals/part-4-store#middleware)
+
+---
+
 ## Annexes
 * [Getting started with redux](https://egghead.io/courses/getting-started-with-redux)
 * [Learning ressources](https://redux.js.org/introduction/learning-resources)
