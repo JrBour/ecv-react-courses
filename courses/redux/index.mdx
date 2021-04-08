@@ -362,18 +362,41 @@ Pour créer le store, la méthode `configureStore` doit être utilisé. Elle rem
 ## Redux Thunk
 
 Redux Thunk est un middleware permettant l'utilisation d'action asynchrone afin de pouvoir y effectuer des appels API par exemple.
-Grace a l'acces a la methode `dispatch` et au state, il est possible de pouvoir y appeller des actions/selectors directement depuis les actions aynchrones.
+Grâce à l'accès à la méthode `dispatch` et au state, il est possible de pouvoir y appeler des actions/selectors directement depuis les actions asynchrones.
 
+**articles/index.js**
+```js
+export const retrieveArticlesByUser = () => async (dispatch, getState) => {
+  try {
+    const user = getCurrentUser(getState());
+    const response = await fetch(`http://localhost:3004/articles?author=${user.id}`, {
+      method: 'GET',
+    })
+    const data = await response.json();
+    dispatch(addArticles(data))
+  } catch(e) {
+    throw e;
+  }
+}
 ```
 
-// Fous l'exemple de l'exercice de la derniere fois
-// Edit summary
-
-```
-
-[Redux Thunk](https://github.com/reduxjs/redux-thunk)
+[Redux Thunk](https://github.com/reduxjs/redux-thunk) - 
 [Redux middleware](https://redux.js.org/tutorials/fundamentals/part-4-store#middleware)
 
+---
+
+**store/index.js**
+```js
+import thunk from 'redux-thunk';
+
+const store = configureStore({ reducer, devTools: true, middleware: [thunk] });
+
+// OU
+
+import { applyMiddleware, createStore } from 'react-redux'
+
+const store = const store = createStore(rootReducer, applyMiddleware(thunk)); 
+```
 ---
 
 ## Annexes
