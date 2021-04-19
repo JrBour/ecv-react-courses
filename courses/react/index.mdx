@@ -20,6 +20,7 @@ import {DarkSlide, CodeSlide, ImageLayout} from '../../slides';
 - Formulaire
 - Router
 - Fragment
+- HOC
 
 ---
 
@@ -819,6 +820,63 @@ const Input = ({ label, value, handleChange }) => (
 ```
 
 [Fragment](https://reactjs.org/docs/fragments.html)
+
+---
+
+## HOC
+
+Un HOC (High-Order Component) permet de réutiliser la logique d'un composant sur d'autres composants.
+
+```js
+const Auth = Component => {
+  const Layout = () => {
+    const history = useHistory();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+      if (!Cookies.get('jwt')) {
+        history.push('/login')
+        return;
+      }
+      const payload = jwt.decode(Cookies.get('jwt'))
+      dispatch(addProfile(payload))
+    }, [])
+    
+    return (
+      <>
+        <Header />
+        <Component/>
+      </>
+    )
+  }
+  return Layout
+}
+
+```
+
+[HOC](https://reactjs.org/docs/higher-order-components.html)
+
+---
+
+Grâce aux HOC, il est tout à fait possible de créer des layouts, qui pourront  
+être utilisé sur des pages.
+
+
+```
+const Auth = Component => {
+  const Layout = () => (
+    <>
+      <Header />
+      <Component/>
+    </>
+  )
+  return Layout
+}
+```
+
+```
+  export defaut Auth(Login);
+```
 
 ---
 
